@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 # Microsoft Fabric Capacity Resource Module Proposal
 
 Creates one Azure Microsoft Fabric capacity with AzAPI and exposes AVM-style resource interfaces.
@@ -43,64 +44,212 @@ terraform test
 ```
 
 Publication still requires the official AVM proposal, ownership metadata, compliance tooling, review, and live Azure integration evidence.
-
-<!-- BEGIN_TF_DOCS -->
+<!-- markdownlint-disable MD033 -->
 ## Requirements
 
-| Name | Version |
-| ---- | ------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9, < 2.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 2.11.0 |
-| <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) | ~> 0.4.0 |
+The following requirements are needed by this module:
 
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
+
+- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~> 2.11.0)
+
+- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.4.0)
 ## Providers
 
-| Name | Version |
-| ---- | ------- |
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 2.11.0 |
-| <a name="provider_modtm"></a> [modtm](#provider\_modtm) | 0.4.0 |
+The following providers are used by this module:
 
-## Modules
+- <a name="provider_azapi"></a> [azapi](#provider\_azapi) (~> 2.11.0)
 
-| Name | Source | Version |
-| ---- | ------ | ------- |
-| <a name="module_interfaces"></a> [interfaces](#module\_interfaces) | Azure/avm-utl-interfaces/azure | 0.6.0 |
-
+- <a name="provider_modtm"></a> [modtm](#provider\_modtm) (~> 0.4.0)
 ## Resources
 
-| Name | Type |
-| ---- | ---- |
-| [azapi_resource.lock](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
-| [azapi_resource.role_assignments](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
-| [azapi_resource.this](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
-| [modtm_telemetry.this](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) | resource |
-| [azapi_client_config.current](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) | data source |
+The following resources are used by this module:
 
-## Inputs
+- [azapi_resource.lock](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.role_assignments](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.this](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [modtm_telemetry.this](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
+- [azapi_client_config.current](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) (data source)
+<!-- markdownlint-disable MD013 -->
+## Required Inputs
 
-| Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_administration_members"></a> [administration\_members](#input\_administration\_members) | Fabric capacity administrators. Use a user principal name for an Entra user or an object ID for a service principal. | `set(string)` | n/a | yes |
-| <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry) | Controls whether anonymous module usage telemetry is enabled. | `bool` | `true` | no |
-| <a name="input_location"></a> [location](#input\_location) | Azure region for the Fabric capacity. | `string` | n/a | yes |
-| <a name="input_lock"></a> [lock](#input\_lock) | Management lock applied to the Fabric capacity. | <pre>object({<br/>    kind = string<br/>    name = optional(string, null)<br/>  })</pre> | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the Fabric capacity. | `string` | n/a | yes |
-| <a name="input_parent_id"></a> [parent\_id](#input\_parent\_id) | Resource ID of the resource group in which to create the Fabric capacity. | `string` | n/a | yes |
-| <a name="input_resource_types"></a> [resource\_types](#input\_resource\_types) | AzAPI resource types used by this module. Override only when validating a supported API migration. | <pre>object({<br/>    fabric_capacities = optional(string, "Microsoft.Fabric/capacities@2023-11-01")<br/>  })</pre> | `{}` | no |
-| <a name="input_retry"></a> [retry](#input\_retry) | Retry configuration for AzAPI resource operations. | <pre>object({<br/>    error_message_regex  = optional(list(string), ["409 Conflict", "429 Too Many Requests"])<br/>    interval_seconds     = optional(number, null)<br/>    max_interval_seconds = optional(number, null)<br/>  })</pre> | `{}` | no |
-| <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments) | ARM role assignments to create on the Fabric capacity. | <pre>map(object({<br/>    name                                   = optional(string, null)<br/>    role_definition_id_or_name             = string<br/>    principal_id                           = string<br/>    description                            = optional(string, null)<br/>    skip_service_principal_aad_check       = optional(bool, false)<br/>    condition                              = optional(string, null)<br/>    condition_version                      = optional(string, null)<br/>    delegated_managed_identity_resource_id = optional(string, null)<br/>    principal_type                         = optional(string, null)<br/>  }))</pre> | `{}` | no |
-| <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | Fabric F SKU for the capacity. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Azure tags applied to the Fabric capacity. | `map(string)` | `{}` | no |
-| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | Timeouts for Fabric capacity, lock, and role-assignment operations. | <pre>object({<br/>    create = optional(string, "30m")<br/>    delete = optional(string, "30m")<br/>    read   = optional(string, "5m")<br/>    update = optional(string, "30m")<br/>  })</pre> | `{}` | no |
+The following input variables are required:
 
+### <a name="input_administration_members"></a> [administration\_members](#input\_administration\_members)
+
+Description: Fabric capacity administrators. Use a user principal name for an Entra user or an object ID for a service principal.
+
+Type: `set(string)`
+
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: Azure region for the Fabric capacity.
+
+Type: `string`
+
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: Name of the Fabric capacity.
+
+Type: `string`
+
+### <a name="input_parent_id"></a> [parent\_id](#input\_parent\_id)
+
+Description: Resource ID of the resource group in which to create the Fabric capacity.
+
+Type: `string`
+
+### <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name)
+
+Description: Fabric F SKU for the capacity.
+
+Type: `string`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
+
+Description: Controls whether anonymous module usage telemetry is enabled.
+
+Type: `bool`
+
+Default: `true`
+
+### <a name="input_lock"></a> [lock](#input\_lock)
+
+Description: Management lock applied to the Fabric capacity.
+
+Type:
+
+```hcl
+object({
+    kind = string
+    name = optional(string, null)
+  })
+```
+
+Default: `null`
+
+### <a name="input_resource_types"></a> [resource\_types](#input\_resource\_types)
+
+Description: AzAPI resource types used by this module. Override only when validating a supported API migration.
+
+Type:
+
+```hcl
+object({
+    fabric_capacities = optional(string, "Microsoft.Fabric/capacities@2023-11-01")
+  })
+```
+
+Default: `{}`
+
+### <a name="input_retry"></a> [retry](#input\_retry)
+
+Description: Retry configuration for AzAPI resource operations.
+
+Type:
+
+```hcl
+object({
+    error_message_regex  = optional(list(string), ["409 Conflict", "429 Too Many Requests"])
+    interval_seconds     = optional(number, null)
+    max_interval_seconds = optional(number, null)
+  })
+```
+
+Default: `{}`
+
+### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
+
+Description: ARM role assignments to create on the Fabric capacity.
+
+Type:
+
+```hcl
+map(object({
+    name                                   = optional(string, null)
+    role_definition_id_or_name             = string
+    principal_id                           = string
+    description                            = optional(string, null)
+    skip_service_principal_aad_check       = optional(bool, false)
+    condition                              = optional(string, null)
+    condition_version                      = optional(string, null)
+    delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
+  }))
+```
+
+Default: `{}`
+
+### <a name="input_tags"></a> [tags](#input\_tags)
+
+Description: Azure tags applied to the Fabric capacity.
+
+Type: `map(string)`
+
+Default: `{}`
+
+### <a name="input_timeouts"></a> [timeouts](#input\_timeouts)
+
+Description: Timeouts for Fabric capacity, lock, and role-assignment operations.
+
+Type:
+
+```hcl
+object({
+    create = optional(string, "30m")
+    delete = optional(string, "30m")
+    read   = optional(string, "5m")
+    update = optional(string, "30m")
+  })
+```
+
+Default: `{}`
 ## Outputs
 
-| Name | Description |
-| ---- | ----------- |
-| <a name="output_location"></a> [location](#output\_location) | Azure region of the Fabric capacity. |
-| <a name="output_name"></a> [name](#output\_name) | Name of the Fabric capacity. |
-| <a name="output_resource"></a> [resource](#output\_resource) | Full AzAPI Fabric capacity resource. |
-| <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id) | Azure resource ID of the Fabric capacity. |
+The following outputs are exported:
+
+### <a name="output_location"></a> [location](#output\_location)
+
+Description: Azure region of the Fabric capacity.
+
+### <a name="output_name"></a> [name](#output\_name)
+
+Description: Name of the Fabric capacity.
+
+### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: Full AzAPI Fabric capacity resource.
+
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
+
+Description: Azure resource ID of the Fabric capacity.
+## Modules
+
+The following Modules are called:
+
+### <a name="module_interfaces"></a> [interfaces](#module\_interfaces)
+
+Source: Azure/avm-utl-interfaces/azure
+
+Version: 0.6.0
+## Notes
+
+### Unsupported AVM extension resources (RMFR4)
+
+[AVM resource-module spec RMFR4](https://azure.github.io/Azure-Verified-Modules/spec/RMFR4) requires resource modules to support `diagnostic_settings`, `role_assignments`, `lock`, `tags`, `managed_identities`, `private_endpoints`, and `customer_managed_key`, where the underlying Azure resource supports them. This module implements `role_assignments`, `lock`, and `tags`. It intentionally does **not** implement `diagnostic_settings`, `managed_identities`, `private_endpoints`, or `customer_managed_key`, because `Microsoft.Fabric/capacities` does not support them:
+
+- **Managed identities** — the `Microsoft.Fabric/capacities` ARM schema (checked against both the `2023-11-01` GA and `2025-01-15-preview` API versions) has no `identity` block. There is no system-assigned or user-assigned identity to attach.
+- **Private endpoints** — the resource schema exposes no `privateEndpointConnections` or `publicNetworkAccess` property, and Fabric's private-link surface (`Microsoft.Fabric/privateLinkServicesForFabric`) is a workspace-level concept, not a capacity-level one. A capacity cannot itself be the target of a private endpoint.
+- **Customer-managed keys** — the resource schema has no encryption/CMK-related properties.
+- **Diagnostic settings** — Azure Monitor does not publish supported metric or log categories for `Microsoft.Fabric/capacities`, so there is no `Microsoft.Insights/diagnosticSettings` target to wire up.
+
+The published Microsoft-owned Bicep AVM module for the same resource type ([`avm/res/fabric/capacity`](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/fabric/capacity)) corroborates this: it implements only `name`, `location`, `tags`, `sku`, `administration.members`, `lock`, and telemetry — no identity, private endpoint, CMK, or diagnostic-settings support either.
+
+If a future Fabric capacities API version adds any of these capabilities, this module should be updated to add the corresponding interface at that time.
 
 ### Data Collection
 
