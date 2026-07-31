@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "fabric.vscode-fabric-mcp-server",
+    "hashicorp.terraform",
+    "ms-azuretools.vscode-azure-mcp-server"
+  ]
+}

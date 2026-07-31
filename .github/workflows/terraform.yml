@@ -1,0 +1,32 @@
+name: Terraform validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+      - name: Check formatting
+        run: terraform fmt -check -recursive
+      - name: Initialize
+        run: terraform init -backend=false
+      - name: Validate
+        run: terraform validate
+      - name: Test Fabric capacity
+        run: terraform test
+      - name: Validate default example
+        working-directory: examples/default
+        run: |
+          terraform init -backend=false
+          terraform validate
