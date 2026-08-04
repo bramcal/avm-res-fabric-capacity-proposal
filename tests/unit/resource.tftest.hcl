@@ -50,7 +50,7 @@ run "lock_and_telemetry_controls" {
   }
 
   assert {
-    condition     = length(modtm_telemetry.this) == 0
+    condition     = length(modtm_telemetry.telemetry) == 0
     error_message = "Disabling telemetry must prevent telemetry resource creation."
   }
 }

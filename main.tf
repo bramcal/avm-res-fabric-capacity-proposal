@@ -11,11 +11,10 @@ module "interfaces" {
 }
 
 resource "azapi_resource" "this" {
-  type      = var.resource_types.fabric_capacities
+  location  = var.location
   name      = var.name
   parent_id = var.parent_id
-  location  = var.location
-  tags      = var.tags
+  type      = var.resource_types.fabric_capacities
   body = {
     properties = {
       administration = {
@@ -27,6 +26,9 @@ resource "azapi_resource" "this" {
       tier = "Fabric"
     }
   }
+  create_headers        = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers        = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers          = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   replace_triggers_refs = []
   response_export_values = [
     "id",
@@ -35,7 +37,9 @@ resource "azapi_resource" "this" {
     "properties",
     "sku",
   ]
-  retry = var.retry
+  retry          = var.retry
+  tags           = var.tags
+  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
     create = var.timeouts.create
@@ -48,13 +52,17 @@ resource "azapi_resource" "this" {
 resource "azapi_resource" "lock" {
   count = var.lock != null ? 1 : 0
 
-  type                   = module.interfaces.lock_azapi.type
   name                   = coalesce(module.interfaces.lock_azapi.name, "lock-${var.lock.kind}")
   parent_id              = azapi_resource.this.id
+  type                   = module.interfaces.lock_azapi.type
   body                   = module.interfaces.lock_azapi.body
+  create_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers           = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   replace_triggers_refs  = []
   response_export_values = []
   retry                  = var.retry
+  update_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
     create = var.timeouts.create
@@ -67,13 +75,17 @@ resource "azapi_resource" "lock" {
 resource "azapi_resource" "role_assignments" {
   for_each = module.interfaces.role_assignments_azapi
 
-  type                   = each.value.type
   name                   = each.value.name
   parent_id              = azapi_resource.this.id
+  type                   = each.value.type
   body                   = each.value.body
+  create_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers           = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   replace_triggers_refs  = []
   response_export_values = []
   retry                  = var.retry
+  update_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   timeouts {
     create = var.timeouts.create
