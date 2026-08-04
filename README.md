@@ -57,7 +57,7 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~> 2.4)
 
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.4.0)
+- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
 
@@ -175,7 +175,6 @@ Default: `{}`
 
 Description: A map of **Azure RBAC (control-plane)** role assignments to create on the Fabric capacity. The map key is deliberately arbitrary to avoid issues where map keys may be unknown at plan time.
 
-- `name` - (Optional) The name (a GUID) of the role assignment. If not specified, a deterministic name is generated.
 - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
 - `principal_id` - The ID of the principal to assign the role to.
 - `description` - (Optional) The description of the role assignment.
@@ -189,7 +188,6 @@ Type:
 
 ```hcl
 map(object({
-    name                                   = optional(string, null)
     role_definition_id_or_name             = string
     principal_id                           = string
     description                            = optional(string, null)
@@ -205,11 +203,11 @@ Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: Map of tags to assign to the Fabric capacity resource.
+Description: (Optional) Map of tags to assign to the Fabric capacity resource.
 
 Type: `map(string)`
 
-Default: `{}`
+Default: `null`
 
 ### <a name="input_timeouts"></a> [timeouts](#input\_timeouts)
 

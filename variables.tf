@@ -104,7 +104,6 @@ variable "retry" {
 
 variable "role_assignments" {
   type = map(object({
-    name                                   = optional(string, null)
     role_definition_id_or_name             = string
     principal_id                           = string
     description                            = optional(string, null)
@@ -118,7 +117,6 @@ variable "role_assignments" {
   description = <<DESCRIPTION
 A map of **Azure RBAC (control-plane)** role assignments to create on the Fabric capacity. The map key is deliberately arbitrary to avoid issues where map keys may be unknown at plan time.
 
-- `name` - (Optional) The name (a GUID) of the role assignment. If not specified, a deterministic name is generated.
 - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
 - `principal_id` - The ID of the principal to assign the role to.
 - `description` - (Optional) The description of the role assignment.
@@ -133,9 +131,8 @@ DESCRIPTION
 
 variable "tags" {
   type        = map(string)
-  default     = {}
-  description = "Map of tags to assign to the Fabric capacity resource."
-  nullable    = false
+  default     = null
+  description = "(Optional) Map of tags to assign to the Fabric capacity resource."
 }
 
 variable "timeouts" {
