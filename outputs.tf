@@ -9,8 +9,8 @@ output "name" {
 }
 
 output "resource" {
-  description = "Full AzAPI Fabric capacity resource."
-  value       = azapi_resource.this
+  description = "The Fabric capacity resource, limited to the exported read-only values (`id`, `location`, `name`, `properties`, `sku`)."
+  value       = azapi_resource.this.output
 }
 
 output "resource_id" {

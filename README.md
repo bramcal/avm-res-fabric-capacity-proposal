@@ -15,7 +15,7 @@ Creates one Azure Microsoft Fabric capacity with AzAPI and exposes AVM-style res
 - Administrators: Entra user UPNs or service-principal object IDs. Entra groups are not accepted by the capacity ARM API.
 - Shared interfaces: `Azure/avm-utl-interfaces/azure` v0.6.0 for management locks and ARM role assignments.
 - Operations: telemetry, tags, configurable retry behavior, and timeouts.
-- Outputs: name, location, resource ID, and the full AzAPI resource.
+- Outputs: name, location, resource ID, and the exported read-only resource body.
 
 Tenant settings are intentionally excluded. They are tenant-scoped Fabric API resources and are managed once by the data-management-landing-zone tenant-settings child module in the source pattern repository.
 
@@ -240,7 +240,7 @@ Description: Name of the Fabric capacity.
 
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
-Description: Full AzAPI Fabric capacity resource.
+Description: The Fabric capacity resource, limited to the exported read-only values (`id`, `location`, `name`, `properties`, `sku`).
 
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
