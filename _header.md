@@ -45,3 +45,9 @@ This repository uses the standard AVM Terraform tooling, which runs in a contain
 ```
 
 The module is already registered in the AVM Terraform resource module index as `avm-res-fabric-capacity` (status `Proposed`). Publication still requires repository creation under the `Azure` organisation, core-team review, and live end-to-end deployment evidence.
+
+### Open question: repository and registry naming
+
+The AVM index currently records this module as `terraform-azurerm-avm-res-fabric-capacity`, published to `registry.terraform.io/modules/Azure/avm-res-fabric-capacity/azurerm`. This module is AzAPI-based, and the two AVM resource modules that are also AzAPI-based — [`avm-res-keyvault-managedhsm`](https://github.com/Azure/terraform-azure-avm-res-keyvault-managedhsm) and [`avm-res-appconfiguration-configurationstore`](https://github.com/Azure/terraform-azure-avm-res-appconfiguration-configurationstore) — use `terraform-azure-…` and the `/azure` registry path instead.
+
+At the time of writing only those two of the 155 indexed resource modules use that naming, so it is not yet an established convention. **The correct repository and registry name for this module is pending confirmation from the AVM core team** and must be settled before the repository is created, because the repository-creation process is name-driven and difficult to reverse.
