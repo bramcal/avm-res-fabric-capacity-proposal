@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "fabric.vscode-fabric-mcp-server",
+    "EditorConfig.EditorConfig",
     "hashicorp.terraform",
-    "ms-azuretools.vscode-azure-mcp-server"
+    "ms-azuretools.vscode-azureterraform"
   ]
 }

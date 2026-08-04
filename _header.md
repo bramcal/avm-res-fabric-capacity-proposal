@@ -32,14 +32,16 @@ module "capacity" {
 }
 ```
 
-See [examples/default](examples/default) for a runnable configuration.
+See [examples/default](examples/default) for the simplest runnable configuration, and [examples/max](examples/max) for one exercising every supported AVM interface.
 
 ## Validation
 
+This repository uses the standard AVM Terraform tooling, which runs in a container and requires Docker or Podman:
+
 ```powershell
-terraform init -backend=false
-terraform validate
-terraform test
+./avm pre-commit    # avmfix, terraform fmt, terraform-docs
+./avm pr-check      # linting, TFLint (AVM ruleset), Conftest/OPA
+./avm tf-test-unit  # mocked unit tests in tests/unit
 ```
 
-Publication still requires the official AVM proposal, ownership metadata, compliance tooling, review, and live Azure integration evidence.
+The module is already registered in the AVM Terraform resource module index as `avm-res-fabric-capacity` (status `Proposed`). Publication still requires repository creation under the `Azure` organisation, core-team review, and live end-to-end deployment evidence.

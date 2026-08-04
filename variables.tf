@@ -13,31 +13,10 @@ variable "administration_members" {
   }
 }
 
-variable "enable_telemetry" {
-  type        = bool
-  description = "Controls whether anonymous module usage telemetry is enabled."
-  default     = true
-  nullable    = false
-}
-
 variable "location" {
   type        = string
   description = "Azure region for the Fabric capacity."
   nullable    = false
-}
-
-variable "lock" {
-  type = object({
-    kind = string
-    name = optional(string, null)
-  })
-  description = "Management lock applied to the Fabric capacity."
-  default     = null
-
-  validation {
-    condition     = var.lock == null || contains(["CanNotDelete", "ReadOnly"], var.lock.kind)
-    error_message = "lock.kind must be CanNotDelete or ReadOnly."
-  }
 }
 
 variable "name" {
@@ -62,43 +41,6 @@ variable "parent_id" {
   }
 }
 
-variable "resource_types" {
-  type = object({
-    fabric_capacities = optional(string, "Microsoft.Fabric/capacities@2023-11-01")
-  })
-  description = "AzAPI resource types used by this module. Override only when validating a supported API migration."
-  default     = {}
-  nullable    = false
-}
-
-variable "retry" {
-  type = object({
-    error_message_regex  = optional(list(string), ["409 Conflict", "429 Too Many Requests"])
-    interval_seconds     = optional(number, null)
-    max_interval_seconds = optional(number, null)
-  })
-  description = "Retry configuration for AzAPI resource operations."
-  default     = {}
-  nullable    = false
-}
-
-variable "role_assignments" {
-  type = map(object({
-    name                                   = optional(string, null)
-    role_definition_id_or_name             = string
-    principal_id                           = string
-    description                            = optional(string, null)
-    skip_service_principal_aad_check       = optional(bool, false)
-    condition                              = optional(string, null)
-    condition_version                      = optional(string, null)
-    delegated_managed_identity_resource_id = optional(string, null)
-    principal_type                         = optional(string, null)
-  }))
-  description = "ARM role assignments to create on the Fabric capacity."
-  default     = {}
-  nullable    = false
-}
-
 variable "sku_name" {
   type        = string
   description = "Fabric F SKU for the capacity."
@@ -110,11 +52,87 @@ variable "sku_name" {
   }
 }
 
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = <<DESCRIPTION
+This variable controls whether or not telemetry is enabled for the module.
+For more information see <https://aka.ms/avm/telemetryinfo>.
+If it is set to false, then no telemetry will be collected.
+DESCRIPTION
+  nullable    = false
+}
+
+variable "lock" {
+  type = object({
+    kind = string
+    name = optional(string, null)
+  })
+  default     = null
+  description = <<DESCRIPTION
+Controls the Resource Lock configuration for the Fabric capacity. The following properties can be specified:
+
+- `kind` - (Required) The type of lock. Possible values are `CanNotDelete` and `ReadOnly`.
+- `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
+DESCRIPTION
+
+  validation {
+    condition     = var.lock == null || contains(["CanNotDelete", "ReadOnly"], var.lock.kind)
+    error_message = "Lock kind must be one of: `CanNotDelete` or `ReadOnly`."
+  }
+}
+
+variable "resource_types" {
+  type = object({
+    fabric_capacities = optional(string, "Microsoft.Fabric/capacities@2023-11-01")
+  })
+  default     = {}
+  description = "AzAPI resource types used by this module. Override only when validating a supported API migration."
+  nullable    = false
+}
+
+variable "retry" {
+  type = object({
+    error_message_regex  = optional(list(string), ["409 Conflict", "429 Too Many Requests"])
+    interval_seconds     = optional(number, null)
+    max_interval_seconds = optional(number, null)
+  })
+  default     = {}
+  description = "Retry configuration for AzAPI resource operations."
+  nullable    = false
+}
+
+variable "role_assignments" {
+  type = map(object({
+    role_definition_id_or_name             = string
+    principal_id                           = string
+    description                            = optional(string, null)
+    skip_service_principal_aad_check       = optional(bool, false)
+    condition                              = optional(string, null)
+    condition_version                      = optional(string, null)
+    delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
+  }))
+  default     = {}
+  description = <<DESCRIPTION
+A map of **Azure RBAC (control-plane)** role assignments to create on the Fabric capacity. The map key is deliberately arbitrary to avoid issues where map keys may be unknown at plan time.
+
+- `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
+- `principal_id` - The ID of the principal to assign the role to.
+- `description` - (Optional) The description of the role assignment.
+- `skip_service_principal_aad_check` - (Optional) If set to true, skips the Microsoft Entra check for the service principal in the tenant. Defaults to false.
+- `condition` - (Optional) The condition which will be used to scope the role assignment.
+- `condition_version` - (Optional) The version of the condition syntax. Valid values are `2.0`.
+- `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource ID which contains a Managed Identity. Changing this forces a new resource to be created.
+- `principal_type` - (Optional) The type of the `principal_id`. Possible values are `User`, `Group` and `ServicePrincipal`.
+DESCRIPTION
+  nullable    = false
+}
+
 variable "tags" {
   type        = map(string)
-  description = "Azure tags applied to the Fabric capacity."
-  default     = {}
-  nullable    = false
+  default     = null
+  description = "(Optional) Map of tags to assign to the Fabric capacity resource."
 }
 
 variable "timeouts" {
@@ -124,7 +142,7 @@ variable "timeouts" {
     read   = optional(string, "5m")
     update = optional(string, "30m")
   })
-  description = "Timeouts for Fabric capacity, lock, and role-assignment operations."
   default     = {}
+  description = "Timeouts for Fabric capacity, lock, and role-assignment operations."
   nullable    = false
 }
